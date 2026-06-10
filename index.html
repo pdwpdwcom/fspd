@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>佛山蒲典 - 最新回家地址</title>
+    <style>
+        body { background-color: #0b2d4f; color: #fff; font-family: sans-serif; text-align: center; padding-top: 50px; }
+        .loading { font-size: 18px; margin-bottom: 20px; }
+        .btn { display: inline-block; padding: 10px 20px; background: #d4af37; color: #0b2d4f; border-radius: 5px; text-decoration: none; font-weight: bold; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h2>欢迎回到蒲典</h2>
+    <p class="loading" id="status">正在为你检测最快的安全通道，请稍候...</p>
+    <div id="links" style="display:none;">
+        <p>如果系统没有自动跳转，请点击下方链接进入：</p>
+    </div>
+
+    <script>
+        // 你的备用域名列表（按优先级排序）
+        const domains = [
+            "https://www.fspd27.com",
+            "https://www.fspd28.com",
+            "https://www.fspd29.com",
+            "https://www.fspd30.com",
+            "https://www.fspd31.com",
+            "https://www.fspd32.com"
+        ];
+
+        let resolved = false;
+
+        // 检测域名是否可用
+        function testDomain(url) {
+            // 使用 fetch 尝试请求论坛的一个轻量级文件（如 robots.txt），防止跨域可以用 img 探测
+            const img = new Image();
+            img.src = url + "/robots.txt?t=" + new Date().getTime();
+            
+            img.onload = img.onerror = function() {
+                if (!resolved) {
+                    resolved = true;
+                    document.getElementById('status').innerText = "通道检测成功！正在跳转...";
+                    setTimeout(() => {
+                        window.location.href = url;
+                    }, 1000);
+                }
+            };
+        }
+
+        // 启动检测
+        domains.forEach(url => testDomain(url));
+
+        // 如果5秒内都打不开，显示手动备用链接
+        setTimeout(() => {
+            if (!resolved) {
+                document.getElementById('status').innerText = "自动检测超时，请尝试手动点击以下链接：";
+                const linksDiv = document.getElementById('links');
+                linksDiv.style.display = 'block';
+                domains.forEach(url => {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.className = 'btn';
+                    a.innerText = url.replace('https://', '');
+                    linksDiv.appendChild(a);
+                });
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
